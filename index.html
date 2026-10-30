@@ -56,6 +56,16 @@ const DECKS = {
 const params = new URLSearchParams(location.search);
 const deckId = params.get("deck") || "ia-act-fr";
 const deck = DECKS[deckId];
+const EN = deckId === "ia-act-en";
+
+if (EN) {
+  document.documentElement.lang = "en";
+  document.title = "AI Act Flashcards";
+  document.querySelector("#prev").textContent = "← Previous";
+  document.querySelector("#next").textContent = "Next →";
+  document.querySelector("#flip").textContent = "Flip card";
+  document.querySelector("#shuffle").textContent = "Shuffle";
+}
 const $ = id => document.getElementById(id);
 let cards = [], order = [], index = 0, showingAnswer = false;
 
