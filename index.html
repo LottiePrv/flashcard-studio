@@ -63,8 +63,9 @@ const DECKS = {
 const params = new URLSearchParams(location.search);
 const deckId = params.get("deck") || "ia-act-fr";
 const deck = DECKS[deckId];
-const EN = deckId === "ia-act-en";
-const IT = deckId === "dati-orali-it";
+const lang = deck.lang || "FR";
+const EN = lang === "EN";
+const IT = lang === "IT";
 
 if (EN) {
   document.documentElement.lang = "en";
