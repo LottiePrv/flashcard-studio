@@ -144,11 +144,7 @@ $("shuffle").addEventListener("click",()=>{
 index=0;
 showingAnswer=false;
 render();
-$("status").textContent = EN 
-  ? "Click the card or 'Flip card' to reveal the answer."
-  : IT
-    ? "Clicca sulla carta o su « Gira la carta » per vedere la risposta."
-    : "Cliquez sur la carte ou sur « Retourner » pour voir la réponse.";
+$("status").textContent = `Cartes chargées : ${cards.length} | Première question : ${cards[0]?.question || "(vide)"}`;
   }catch(e){
   $("status").textContent = EN
     ? `Unable to load the deck: ${e.message}. Check the CSV filename and make sure it exists in the repository.`
