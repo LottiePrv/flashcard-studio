@@ -107,7 +107,9 @@ function parseCSV(text) {
 function render(){
   if(!cards.length) return;
   const c=cards[order[index]];
-  $("side").textContent=showingAnswer?(EN?"Answer":"Réponse"):(EN?"Question":"Question");
+  $("side").textContent = showingAnswer
+  ? (EN ? "Answer" : IT ? "Risposta" : "Réponse")
+  : (EN ? "Question" : IT ? "Domanda" : "Question");
   $("content").textContent=showingAnswer?c.answer:c.question;
   $("counter").textContent=`${index+1} / ${cards.length}`;
   $("bar").style.width=`${(index+1)/cards.length*100}%`;
