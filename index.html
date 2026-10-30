@@ -140,7 +140,11 @@ $("shuffle").addEventListener("click",()=>{
     const data=rows.slice(1).filter(r=>r.length>=2 && (r[0].trim()||r[1].trim()));
     cards=data.map(r=>({question:r[0].trim(),answer:r.slice(1).join(",").trim()}));
     if(!cards.length) throw new Error("aucune carte trouvée dans le CSV");
-    order=cards.map((_,i)=>i);$("status").textContent=EN?"Click the card or 'Flip card' to reveal the answer.":"Cliquez sur la carte ou sur « Retourner » pour voir la réponse.";
+    order=cards.map((_,i)=>i);$("status").textContent = EN
+  ? "Click the card or 'Flip card' to reveal the answer."
+  : IT
+    ? "Clicca sulla carta o su « Gira la carta » per vedere la risposta."
+    : "Cliquez sur la carte ou sur « Retourner » pour voir la réponse.";
   }catch(e){
   $("status").textContent=EN
     ? `Unable to load the deck: ${e.message}. Check the CSV filename and make sure it exists in the repository.`
