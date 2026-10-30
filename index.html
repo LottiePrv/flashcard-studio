@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flashcards</title>
+<style>
+:root { color-scheme: light; --ink:#202431; --muted:#687080; --accent:#5267d8; --paper:#fff; --bg:#f3f5fb; }
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);display:flex;align-items:center;justify-content:center;padding:24px}
+main{width:min(760px,100%)}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px}
+h1{font-size:clamp(1.25rem,3vw,1.8rem);margin:0}
+#counter{color:var(--muted);font-size:.95rem;white-space:nowrap}
+.progress{height:7px;background:#e1e5f0;border-radius:99px;overflow:hidden;margin:0 0 20px}
+#bar{height:100%;width:0;background:var(--accent);transition:width .2s}
+.card{width:100%;min-height:330px;border:0;border-radius:22px;background:var(--paper);box-shadow:0 12px 35px #20243118;padding:36px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;position:relative}
+.card:focus-visible,button:focus-visible{outline:3px solid #91a0ff;outline-offset:3px}
+.hint{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
+#content{font-size:clamp(1.2rem,3.2vw,1.8rem);line-height:1.45;white-space:pre-wrap}
+.controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px}
+button{border:0;border-radius:12px;padding:12px 18px;font:inherit;font-weight:600;cursor:pointer;background:#e5e8f3;color:var(--ink)}
+button.primary{background:var(--accent);color:white}
+button:disabled{opacity:.4;cursor:not-allowed}
+#status{min-height:24px;text-align:center;color:var(--muted);margin-top:16px;font-size:.9rem}
+@media(max-width:520px){body{padding:16px}.card{min-height:290px;padding:24px}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><h1 id="title">Flashcards</h1><div id="counter"></div></div>
+  <div class="progress"><div id="bar"></div></div>
+  <button class="card" id="card" type="button" aria-label="Retourner la carte">
+    <span class="hint" id="side">Question</span><span id="content">Chargement…</span>
+  </button>
+  <div class="controls">
+    <button id="prev">← Précédente</button>
+    <button class="primary" id="flip">Retourner</button>
+    <button id="next">Suivante →</button>
+    <button id="shuffle">Mélanger</button>
+  </div>
+  <div id="status" role="status"></div>
+</main>
+<script>
+/* Ajouter un jeu dans DECKS : identifiant: {title, file}. */
+const DECKS = {
+  "ia-act-fr": { title: "IA Act — Français", file: "flashcards_AIACT_FR.csv" }
+};
+const params = new URLSearchParams(location.search);
+const deckId = params.get("deck") || "ia-act-fr";
+const deck = DECKS[deckId];
+const $ = id => document.getElementById(id);
+let cards = [], order = [], index = 0, showingAnswer = false;
+
+function parseCSV(text) {
+  const rows=[]; let row=[], field="", quoted=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i], n=text[i+1];
+    if(c === '"' && quoted && n === '"'){field+='"';i++;}
+    else if(c === '"'){quoted=!quoted;}
+    else if(c === ',' && !quoted){row.push(field);field="";}
+    else if((c === '\n' || c === '\r') && !quoted){
+      if(c === '\r' && n === '\n') i++;
+      row.push(field); if(row.some(v=>v.trim()!=="")) rows.push(row);
+      row=[];field="";
+    } else field+=c;
+  }
+  row.push(field); if(row.some(v=>v.trim()!=="")) rows.push(row);
+  return rows;
+}
+function render(){
+  if(!cards.length) return;
+  const c=cards[order[index]];
+  $("side").textContent=showingAnswer?"Réponse":"Question";
+  $("content").textContent=showingAnswer?c.answer:c.question;
+  $("counter").textContent=`${index+1} / ${cards.length}`;
+  $("bar").style.width=`${(index+1)/cards.length*100}%`;
+  $("prev").disabled=index===0;
+  $("next").disabled=index===cards.length-1;
+}
+function flip(){showingAnswer=!showingAnswer;render();}
+function move(delta){index=Math.max(0,Math.min(cards.length-1,index+delta));showingAnswer=false;render();}
+$("card").addEventListener("click",flip);
+$("flip").addEventListener("click",flip);
+$("prev").addEventListener("click",()=>move(-1));
+$("next").addEventListener("click",()=>move(1));
+$("shuffle").addEventListener("click",()=>{
+  for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+  index=0;showingAnswer=false;render();
+});
+(async()=>{
+  if(!deck){$("title").textContent="Jeu introuvable";$("status").textContent=`L’identifiant « ${deckId} » n’est pas configuré.`;return;}
+  $("title").textContent=deck.title;
+  try{
+    const response=await fetch(deck.file);
+    if(!response.ok) throw new Error(`fichier introuvable (${response.status})`);
+    const rows=parseCSV(await response.text());
+    const data=rows.slice(1).filter(r=>r.length>=2 && (r[0].trim()||r[1].trim()));
+    cards=data.map(r=>({question:r[0].trim(),answer:r.slice(1).join(",").trim()}));
+    if(!cards.length) throw new Error("aucune carte trouvée dans le CSV");
+    order=cards.map((_,i)=>i);$("status").textContent="Cliquez sur la carte ou sur « Retourner » pour voir la réponse.";render();
+  }catch(e){$("status").textContent=`Impossible de charger le jeu : ${e.message}. Vérifiez le nom du fichier CSV et sa présence dans le dépôt.`;}
+})();
+</script>
+</body>
+</html>
