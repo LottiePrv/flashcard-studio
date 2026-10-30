@@ -110,7 +110,8 @@ function render(){
   $("side").textContent = showingAnswer
   ? (EN ? "Answer" : IT ? "Risposta" : "Réponse")
   : (EN ? "Question" : IT ? "Domanda" : "Question");
-  $("content").textContent=showingAnswer?c.answer:c.question;
+  $("content").textContent = showingAnswer ? c.answer : c.question;
+  $("content").style.color = "#202431";
   $("counter").textContent=`${index+1} / ${cards.length}`;
   $("bar").style.width=`${(index+1)/cards.length*100}%`;
   $("prev").disabled=index===0;
