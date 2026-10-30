@@ -137,7 +137,7 @@ $("shuffle").addEventListener("click",()=>{
     const response=await fetch(deck.file);
     if(!response.ok) throw new Error(`fichier introuvable (${response.status})`);
     const rows=parseCSV(await response.text());
-    const data=rows.slice(1).filter(r=>r.length>=2 && (r[0].trim()||r[1].trim()));
+    const data=rows.filter(r=>r.length>=2 && (r[0].trim()||r[1].trim()));
     cards=data.map(r=>({question:r[0].trim(),answer:r.slice(1).join(",").trim()}));
     if(!cards.length) throw new Error("aucune carte trouvée dans le CSV");
     order=cards.map((_,i)=>i);
