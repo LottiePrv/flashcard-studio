@@ -88,7 +88,7 @@ function parseCSV(text) {
 function render(){
   if(!cards.length) return;
   const c=cards[order[index]];
-  $("side").textContent=showingAnswer?"Réponse":"Question";
+  $("side").textContent=showingAnswer?(EN?"Answer":"Réponse"):(EN?"Question":"Question");
   $("content").textContent=showingAnswer?c.answer:c.question;
   $("counter").textContent=`${index+1} / ${cards.length}`;
   $("bar").style.width=`${(index+1)/cards.length*100}%`;
@@ -115,7 +115,7 @@ $("shuffle").addEventListener("click",()=>{
     const data=rows.slice(1).filter(r=>r.length>=2 && (r[0].trim()||r[1].trim()));
     cards=data.map(r=>({question:r[0].trim(),answer:r.slice(1).join(",").trim()}));
     if(!cards.length) throw new Error("aucune carte trouvée dans le CSV");
-    order=cards.map((_,i)=>i);$("status").textContent="Cliquez sur la carte ou sur « Retourner » pour voir la réponse.";render();
+    order=cards.map((_,i)=>i);$("status").textContent=EN?"Click the card or 'Flip card' to reveal the answer.":"Cliquez sur la carte ou sur « Retourner » pour voir la réponse.";
   }catch(e){$("status").textContent=`Impossible de charger le jeu : ${e.message}. Vérifiez le nom du fichier CSV et sa présence dans le dépôt.`;}
 })();
 </script>
