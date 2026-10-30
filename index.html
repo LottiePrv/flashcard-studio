@@ -46,24 +46,24 @@ button:disabled{opacity:.4;cursor:not-allowed}
 const DECKS = {
   "ia-act-fr": {
     title: "IA Act — Français",
-    file: "flashcards_AIACT_FR.csv"
+    file: "flashcards_AIACT_FR.csv",
     lang: "FR"
   },
   "ia-act-en": {
     title: "AI Act — English",
-    file: "flashcards_AIACT_EN.csv"
+    file: "flashcards_AIACT_EN.csv",
     lang: "EN"
   },
   "dati-orali-it": {
     title: "Dati Orali — Italiano",
-    file: "flashcards_DatiOrali_IT.csv"
+    file: "flashcards_DatiOrali_IT.csv",
     lang: "IT"
   }
 };  
 const params = new URLSearchParams(location.search);
 const deckId = params.get("deck") || "ia-act-fr";
 const deck = DECKS[deckId];
-const lang = deck.lang || "FR";
+const lang = deck?.lang || "FR";
 const EN = lang === "EN";
 const IT = lang === "IT";
 
