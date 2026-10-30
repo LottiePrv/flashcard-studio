@@ -44,8 +44,15 @@ button:disabled{opacity:.4;cursor:not-allowed}
 <script>
 /* Ajouter un jeu dans DECKS : identifiant: {title, file}. */
 const DECKS = {
-  "ia-act-fr": { title: "IA Act — Français", file: "flashcards_AIACT_FR.csv" }
-};
+  "ia-act-fr": {
+    title: "IA Act — Français",
+    file: "flashcards_AIACT_FR.csv"
+  },
+  "ia-act-en": {
+    title: "AI Act — English",
+    file: "flashcards_AIACT_EN.csv"
+  }
+};  
 const params = new URLSearchParams(location.search);
 const deckId = params.get("deck") || "ia-act-fr";
 const deck = DECKS[deckId];
