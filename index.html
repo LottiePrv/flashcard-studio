@@ -61,6 +61,7 @@ const params = new URLSearchParams(location.search);
 const deckId = params.get("deck") || "ia-act-fr";
 const deck = DECKS[deckId];
 const EN = deckId === "ia-act-en";
+const IT = deckId === "dati-orali-it";
 
 if (EN) {
   document.documentElement.lang = "en";
@@ -69,7 +70,17 @@ if (EN) {
   document.querySelector("#next").textContent = "Next →";
   document.querySelector("#flip").textContent = "Flip card";
   document.querySelector("#shuffle").textContent = "Shuffle";
+} else if (IT) {
+  document.documentElement.lang = "it";
+  document.title = "Dati Orali — Flashcard";
+  document.querySelector("#prev").textContent = "← Precedente";
+  document.querySelector("#next").textContent = "Successiva →";
+  document.querySelector("#flip").textContent = "Gira la carta";
+  document.querySelector("#shuffle").textContent = "Mescola";
+} else {
+  document.documentElement.lang = "fr";
 }
+
 const $ = id => document.getElementById(id);
 let cards = [], order = [], index = 0, showingAnswer = false;
 
