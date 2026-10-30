@@ -146,9 +146,11 @@ $("shuffle").addEventListener("click",()=>{
     ? "Clicca sulla carta o su « Gira la carta » per vedere la risposta."
     : "Cliquez sur la carte ou sur « Retourner » pour voir la réponse.";
   }catch(e){
-  $("status").textContent=EN
+  $("status").textContent = EN
     ? `Unable to load the deck: ${e.message}. Check the CSV filename and make sure it exists in the repository.`
-    : `Impossible de charger le jeu : ${e.message}. Vérifiez le nom du fichier CSV et sa présence dans le dépôt.`;
+    : IT
+      ? `Impossibile caricare il set di flashcard: ${e.message}. Controlla il nome del file CSV e verifica che sia presente nel repository.`
+      : `Impossible de charger le jeu : ${e.message}. Vérifiez le nom du fichier CSV et sa présence dans le dépôt.`;
 }
 })();
 </script>
